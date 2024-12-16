@@ -2,11 +2,9 @@
 - 1回しか使わないようなUIコードやマークアップであってもOK
 https://ja.react.dev/learn/your-first-component#nesting-and-organizing-components
 
-
 ## デフォルトエクスポート vs 名前付きエクスポート
 - どちらでも良い
 https://ja.react.dev/learn/importing-and-exporting-components#default-vs-named-exports
-
 
 ## JSXタグが複数あるときにラップしないといけない理由
 - JSX は HTML のように見えますが、裏ではプレーンな JavaScript オブジェクトに変換されます。
@@ -27,23 +25,19 @@ function example3() {
 ```
 - https://ja.react.dev/learn/writing-markup-with-jsx#why-do-multiple-jsx-tags-need-to-be-wrapped
 
-
 ## React はなぜ純粋性を重視するのか？
 - 入力値が変化しない場合、レンダーをスキップすることでパフォーマンスを向上できます。
 - これが問題ないのは、純関数は常に同じ出力を返すため安全にキャッシュできるからです。
 - https://ja.react.dev/learn/keeping-components-pure#why-does-react-care-about-purity
 
-
 ## Reactではコンポーネント固有のメモリのことをstateと呼ぶ
 - コンポーネントは、現在の入力値、現在の画像、ショッピングカートの状態といったものを「覚えておく」必要があります。
 - https://ja.react.dev/learn/adding-interactivity#state-a-components-memory
-
 
 ## イベントハンドラの命名
 - 慣習的に、イベントハンドラは handle の後ろにイベントの名称をつなげた名前にすることが一般的です。
 - onClick={handleClick}、onMouseEnter={handleMouseEnter} などがよく見られます。
 - https://ja.react.dev/learn/responding-to-events#adding-event-handlers
-
 
 ## イベントハンドラに渡す関数は、渡すべきなのであって呼び出すべきではない
 - OK: `<button onClick={handleClick}>`
@@ -52,12 +46,10 @@ function example3() {
 - これは、JSX の { と }の中の JavaScript はすぐに実行されるためです。
 - https://ja.react.dev/learn/responding-to-events#adding-event-handlers
 
-
 ## イベントハンドラのプロップの命名
 - 慣習として、イベントハンドラのプロップは on で始まり、次に大文字の文字が続くようにします。
 - たとえば、Button コンポーネントの props である onClick は onSmash と命名することも可能です
 - https://ja.react.dev/learn/responding-to-events#naming-event-handler-props
-
 
 ## React アプリでの画面更新は、3つのステップで行われる
 1.レンダーのトリガ, 2.コンポーネントのレンダー, 3.DOM へのコミット
@@ -74,20 +66,17 @@ function example3() {
 - この後、ブラウザが実際の画面の描画（ペイント）を行う
 - https://ja.react.dev/learn/render-and-commit
 
-
 ## 「レンダーする」とは
 - React があなたのコンポーネント（関数）を呼び出すということです。
 - 関数から返される JSX は、その時点での UI のスナップショットのようなものです。
 - その JSX 内の props、イベントハンドラ、ローカル変数はすべて、レンダー時の state を使用して計算されます。
 - https://ja.react.dev/learn/state-as-a-snapshot#rendering-takes-a-snapshot-in-time
 
-
 ## React ではなぜ state の変更が非推奨なのか？
 - 最適化：React の一般的な最適化戦略（useMemo）は、前の props や state が次のものと同一である場合作業をスキップする、ということに依存しています。
 - state を書き換えないことで、変更があったかどうかを非常に素早くチェックすることができます。prevObj === obj であれば、内部で何も変更されていないと自信を持って言えるようになります。
 - https://ja.react.dev/learn/updating-objects-in-state#why-is-mutating-state-not-recommended-in-react
 - スプレッド構文は「浅い」、つまり 1 レベルのみのコピーを行う。
-
 
 ## コンポーネントが多くの視覚状態を持つ場合
 - それらをすべて 1 つのページに表示することが便利な場合があります。
@@ -102,19 +91,16 @@ let statuses = [
 ```
 - https://ja.react.dev/learn/reacting-to-input-with-state#displaying-many-visual-states-at-once
 
-
 ## props を state にコピーしない
 - 親コンポーネントから渡された props と同期されなくなってしまう
 - state は最初のレンダー時にのみ初期化されるため
 - https://ja.react.dev/learn/choosing-the-state-structure#don-t-mirror-props-in-state
-
 
 ## メモリ使用量の改善
 - 理想的には、削除された場所アイテム（およびその子アイテム！）自体も「テーブル」オブジェクトから削除して、メモリ使用量を改善するとよいでしょう。
 https://ja.react.dev/learn/choosing-the-state-structure#improving-memory-usage
 - 常にコンポーネント関数はトップレベルで宣言し、定義をネストしないようにしてください。
 - https://ja.react.dev/learn/preserving-and-resetting-state
-
 
 ## state をリセットする方法は、2 つあります。
 - 1. コンポーネントを異なる位置でレンダーする
@@ -195,7 +181,6 @@ function tasksReducer(tasks, action) {
 ```
 - https://ja.react.dev/learn/extracting-state-logic-into-a-reducer
 
-
 ## なぜリデューサと呼ばれるのか？
 - リデューサによりコンポーネント内のコード量を「削減 (reduce)」することもできますが、
 - 実際にはリデューサは配列で行うことができる reduce() という操作にちなんで名付けられています。
@@ -245,3 +230,52 @@ function tasksReducer(tasks, action) {
 - 一般的に、レンダー中に ref にアクセスすることは望ましくありません。
 - 通常、ref にアクセスするのはイベントハンドラからです。
 https://ja.react.dev/learn/manipulating-the-dom-with-refs#when-react-attaches-the-refs
+
+## エフェクトのライフサイクル
+- 画面に追加されたとき、コンポーネントはマウントされます。
+- （大抵はインタラクションに応じて）新しい props や state を受け取ったとき、コンポーネントは更新されます。
+- 画面から削除されたとき、コンポーネントはアンマウントされます。
+- これは、コンポーネントの考え方としては良いですが、エフェクトの考え方としては良くありません。
+- エフェクトは、現在の props や state に外部システムをどのように同期させるのかを記述します。
+https://ja.react.dev/learn/lifecycle-of-reactive-effects#the-lifecycle-of-an-effect
+
+## エフェクトが再同期できることを React はどのように確認するのか
+- 開発環境(development mode)でのみ、useEffectは意図的に2回実行される。
+- コンポーネントが初めてマウントされたときに、3 つのログが表示されることに注目してください。
+
+```
+✅ Connecting to "general" room at https://localhost:1234... (development-only)
+❌ Disconnected from "general" room at https://localhost:1234. (development-only)
+✅ Connecting to "general" room at https://localhost:1234...
+```
+
+- 最初の 2 つのログは開発時のみ表示されます。開発時には、React は常に各コンポーネントを 1 度再マウントします。
+- 開発時には、React はエフェクトを即座に再同期させて、エフェクトの再同期が正しく行われることを確認します。
+- この動作は、ドアの鍵が正しくかかるか確認するために、ドアを 1 度余分に開け閉めしてみることに似ています。
+- React は、クリーンアップ関数が正しく実装されているかを確認するために、開発時にエフェクトを 1 回余分に開始・停止します。
+- https://ja.react.dev/learn/lifecycle-of-reactive-effects#how-react-verifies-that-your-effect-can-re-synchronize
+
+## エフェクトはリアクティブ (reactive) な値に “反応” する
+- 以下の例では、エフェクトが 2 つの変数 (serverUrl と roomId) を利用していますが、依存配列には roomId のみが指定されています。
+
+```ts
+const serverUrl = 'https://localhost:1234';
+
+function ChatRoom({ roomId }) {
+  useEffect(() => {
+    const connection = createConnection(serverUrl, roomId);
+    connection.connect();
+    return () => {
+      connection.disconnect();
+    };
+  }, [roomId]);
+  // ...
+}
+```
+
+- なぜ serverUrl は依存配列に追加しなくて良いのでしょうか？
+- これは、再レンダーが起こっても、決して serverUrl が変化することはないからです。
+- どのような理由で何度再レンダーが起こっても、いつも同じ値です。
+- したがって、依存配列に追加しても意味がありません。
+- 結局のところ、指定する依存値は、時間によって変化して初めて意味があるのです！
+- https://ja.react.dev/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values
