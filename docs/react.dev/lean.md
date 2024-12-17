@@ -241,18 +241,35 @@ https://ja.react.dev/learn/lifecycle-of-reactive-effects#the-lifecycle-of-an-eff
 
 ## エフェクトが再同期できることを React はどのように確認するのか
 - 開発環境(development mode)でのみ、useEffectは意図的に2回実行される。
-- コンポーネントが初めてマウントされたときに、3 つのログが表示されることに注目してください。
+- 例: https://codesandbox.io/p/sandbox/r3pxtv?file=%2Fsrc%2FApp.js%3A11%2C31
 
-```
-✅ Connecting to "general" room at https://localhost:1234... (development-only)
-❌ Disconnected from "general" room at https://localhost:1234. (development-only)
-✅ Connecting to "general" room at https://localhost:1234...
+```ts
+useEffect(() => {
+  const fetchUsers = async () => {
+    console.log("fetchUsers"); // fetchUsersが2回出る
+
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/users"
+      );
+      if (!response.ok) throw new Error("データの取得に失敗しました");
+      const data = await response.json();
+      setUsers(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUsers();
+}, []);
 ```
 
-- 最初の 2 つのログは開発時のみ表示されます。開発時には、React は常に各コンポーネントを 1 度再マウントします。
+- 2つのログは開発時のみ表示されます。開発時には、React は常に各コンポーネントを 1 度再マウントします。
 - 開発時には、React はエフェクトを即座に再同期させて、エフェクトの再同期が正しく行われることを確認します。
 - この動作は、ドアの鍵が正しくかかるか確認するために、ドアを 1 度余分に開け閉めしてみることに似ています。
-- React は、クリーンアップ関数が正しく実装されているかを確認するために、開発時にエフェクトを 1 回余分に開始・停止します。
+- ReactのStrictModeをOFFにすると、開発環境でも1回のログ出力に変わる
 - https://ja.react.dev/learn/lifecycle-of-reactive-effects#how-react-verifies-that-your-effect-can-re-synchronize
 
 ## エフェクトはリアクティブ (reactive) な値に “反応” する
@@ -275,7 +292,77 @@ function ChatRoom({ roomId }) {
 
 - なぜ serverUrl は依存配列に追加しなくて良いのでしょうか？
 - これは、再レンダーが起こっても、決して serverUrl が変化することはないからです。
-- どのような理由で何度再レンダーが起こっても、いつも同じ値です。
 - したがって、依存配列に追加しても意味がありません。
 - 結局のところ、指定する依存値は、時間によって変化して初めて意味があるのです！
 - https://ja.react.dev/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values
+
+## リアクティブな値とリアクティブなロジック
+- コンポーネントの本体部分で宣言された props、state および変数のことをリアクティブな値 (reactive value) と呼びます。
+- リアクティブな値は、useEffectの依存配列に含める必要があります。
+- イベントハンドラ内のロジックはリアクティブではない。
+  - ユーザが同じ操作（クリックなど）を再度行わない限り、再度実行されることはない。
+  - イベントハンドラは値の変化に「反応」することなく、リアクティブな値を読み取ることができる。
+- エフェクト内のロジックはリアクティブである。
+  - フェクトがリアクティブな値を読み取る場合、依存配列としてそれを指定する必要がある。
+  - その後再レンダーによって値が変化した場合、React は新しい値でエフェクトのロジックを再実行する。
+- https://ja.react.dev/learn/separating-events-from-effects#reactive-values-and-reactive-logic
+
+## エフェクトイベントの宣言
+- useEffectEvent という特別なフックを使うことで、エフェクトからこの非リアクティブなロジックを分離することができます。
+- https://ja.react.dev/learn/separating-events-from-effects#declaring-an-effect-event
+
+## オブジェクトからプリミティブ値を読み取る
+- props からオブジェクトを受け取ることがあります。
+
+```ts
+function ChatRoom({ options }) {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const connection = createConnection(options);
+    connection.connect();
+    return () => connection.disconnect();
+  }, [options]); // ✅ All dependencies declared
+  // ...
+```
+
+- しかし、親コンポーネントがオブジェクト作成をレンダー中に行っているかもしれないという心配があります。
+```tsx
+<ChatRoom
+  roomId={roomId}
+  options={{
+    serverUrl: serverUrl,
+    roomId: roomId
+  }}
+/>
+```
+
+- これにより、親コンポーネントの再レンダーのたびに、エフェクトによる再接続が発生してしまいます。
+- これを修正するには、エフェクトの外側でオブジェクトから情報を読み取っておき、オブジェクトや関数自体を依存値として持たせないようにします。
+
+```ts
+function ChatRoom({ options }) {
+  const [message, setMessage] = useState('');
+
+  const { roomId, serverUrl } = options;
+  useEffect(() => {
+    const connection = createConnection({
+      roomId: roomId,
+      serverUrl: serverUrl
+    });
+    connection.connect();
+    return () => connection.disconnect();
+  }, [roomId, serverUrl]); // ✅ All dependencies declared
+  // ...
+```
+- ロジックは少し繰り返しになります（エフェクト外でオブジェクトから値を読み取り、エフェクト内で同じ値を持つオブジェクトを作成している）。
+- しかし、エフェクトが実際に依存している情報が何なのかが、非常に明確になります。
+
+https://ja.react.dev/learn/removing-effect-dependencies#read-primitive-values-from-objects
+
+## レンダー中に呼び出されるすべての関数を use プレフィックスで始めるべきか？
+- 関数の内部で 1 つ以上のフックを使用している場合は、use プレフィックスを付ける（つまりフックにする）必要があります。
+- 原理上は、他のフックを呼び出さないフックを作成することは可能です。
+- 混乱を招き余計な制限が加わるため、このようなパターンは避けるのが賢明です。
+- こうすれば、コンポーネントはこのコードを条件分岐内で呼び出すことができなくなります。中でフック呼び出しを実際に追加したときに、このことが重要になります。
+- https://ja.react.dev/learn/reusing-logic-with-custom-hooks#should-all-functions-called-during-rendering-start-with-the-use-prefix
