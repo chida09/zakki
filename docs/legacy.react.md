@@ -9,4 +9,22 @@ key はグローバルに一意である必要はありません。コンポー�
 https://ja.legacy.reactjs.org/tutorial/tutorial.html#picking-a-key
 
 
+複数行に分割する場合には、自動セミコロン挿入の落とし穴にはまらないように括弧で囲むことをおすすめします
+
+```javascript
+// 問題のあるコード（括弧なし）
+const element = 
+  <h1>
+    Hello, {formatName(user)}!
+  </h1>
+
+// JavaScriptはこのように解釈する可能性がある
+const element = undefined;
+<h1>
+  Hello, {formatName(user)}!
+</h1>;
+```
+
+https://ja.legacy.reactjs.org/docs/introducing-jsx.html
+
 
