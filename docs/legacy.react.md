@@ -27,4 +27,40 @@ const element = undefined;
 
 https://ja.legacy.reactjs.org/docs/introducing-jsx.html
 
+JSX はオブジェクトの表現である
 
+Babel は JSX を React.createElement() の呼び出しへとコンパイルします。
+以下の 2 つの例は等価です：
+
+```tsx
+const element = (
+  <h1 className="greeting">
+    Hello, world!
+  </h1>
+);
+```
+
+```tsx
+const element = React.createElement(
+  'h1',
+  {className: 'greeting'},
+  'Hello, world!'
+);
+```
+
+React.createElement() はバグの混入を防止するためにいくつかのチェックも行いますが、本質的には以下のようなオブジェクトを生成します：
+
+```tsx
+// Note: this structure is simplified
+const element = {
+  type: 'h1',
+  props: {
+    className: 'greeting',
+    children: 'Hello, world!'
+  }
+};
+```
+
+このようなオブジェクトは “React 要素” と呼ばれます。これらは画面に表示したいものの説明書きとして考えることができます。React はこれらのオブジェクトを読み取り、DOM を構築して最新に保ちます。
+
+https://ja.legacy.reactjs.org/docs/introducing-jsx.html#jsx-represents-objects
