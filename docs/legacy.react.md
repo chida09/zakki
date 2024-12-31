@@ -64,3 +64,23 @@ const element = {
 このようなオブジェクトは “React 要素” と呼ばれます。これらは画面に表示したいものの説明書きとして考えることができます。React はこれらのオブジェクトを読み取り、DOM を構築して最新に保ちます。
 
 https://ja.legacy.reactjs.org/docs/introducing-jsx.html#jsx-represents-objects
+
+以下のコードではページ上に “Hello, Sara” を表示します：
+```tsx
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+const element = <Welcome name="Sara" />;
+root.render(element);
+```
+
+https://ja.legacy.reactjs.org/docs/components-and-props.html#rendering-a-component
+
+コンポーネントのレンダーを防ぐ
+稀なケースですが、他のコンポーネントによってレンダーされているにも関わらず、コンポーネントが自分のことを隠したい、ということがあるかもしれません。その場合はレンダー出力の代わりに null を返すようにしてください。
+
+https://ja.legacy.reactjs.org/docs/conditional-rendering.html#preventing-component-from-rendering
+
+
