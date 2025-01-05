@@ -1,3 +1,24 @@
+# 分かったこと
+リポジトリ構成
+
+- app
+- components
+  - grid
+    - index.tsx（コンポーネントが`Grid`の場合はulタグ、`GridItem`の場合はliタグで使い分けている）
+  - layout
+    - footer.tsx（Suspenseを利用）
+- lib
+  - shopify
+    - index.ts（`isShopifyError`でcatch句の条件判定を使い分けている）
+    - types.ts（型定義）
+  - constants.ts
+  - type-guards.ts
+  - utils.ts
+
+# 後で調べたい構文など
+- `import { cookies } from 'next/headers';`
+
+# 調べたこと
 
 ## ComponentProps
 
