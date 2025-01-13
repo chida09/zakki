@@ -39,6 +39,10 @@ h1 { color: red; }
 タグを直接指定するのではなく、クラスを使ってスタイリングすることで、より柔軟で保守しやすいCSSを書くことができます！
 
 
+# normalize.css
+「normalize.css」というCSSもあります。こちらもブラウザ間での表示の差異をなくすという目的はreset.cssと同じですが、「リセット（初期化）」ではなく「ノーマライズ（統一する）」という名前のとおり、UAスタイルシートの装飾を極力活かしながらブラウザ間の差異のみを埋めていくというアプローチが異なります。
+
+
 # remとemの違い
 
 `font-size`プロパティの値の単位に使用されることが多いのは`px`や`em`だった。  
@@ -126,3 +130,61 @@ html {
 
 この場合、上のboxは20pxのマージン、下のbox-largeは30pxのマージンを持つが、隣接する部分では大きい方の30pxが適用される。
 
+# CSS box-sizingプロパティの解説
+
+box-sizingプロパティは、要素の最終的なサイズがどのように計算されるかを制御する重要なCSSプロパティです。
+
+## 初心者向けの説明
+
+### 通常の箱（content-box）の場合
+* あなたが「50cmの箱が欲しい」と言って、50cmの箱を買ったとします
+* その箱に「クッション材を2.5cmずつ入れる」と決めた場合
+* 結果として箱全体は「55cm」になってしまいます（50cm + 2.5cm × 2）
+* これが、CSSのデフォルトの動作（content-box）です
+
+### 新しい考え方の箱（border-box）の場合
+* 最初から「クッション材を含めて50cmにしたい」と考えます
+* 箱全体が50cmで、その中にクッション材（2.5cm × 2）を入れると
+* 実際の収納スペースは自動的に45cmになります
+* これが「box-sizing: border-box」の考え方です
+
+## 技術的な説明
+
+### content-box（デフォルト）の特徴
+```css
+.element {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #000;
+  box-sizing: content-box;
+  /* 実際の幅: 300px + (20px * 2) + (1px * 2) = 342px */
+}
+```
+* widthやheightで指定したサイズは、コンテンツ領域だけに適用
+* paddingとborderの値は、指定したwidthやheightの値の外側に追加
+* 実際の要素幅は「指定width + padding + border」で計算
+
+### border-boxの特徴
+```css
+.element {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  /* 実際の幅: 300px（この中にpadding, borderが含まれる） */
+}
+```
+* widthやheightで指定したサイズに、paddingとborderの値が含まれる
+* コンテンツ領域は自動的に「width - padding - border」で計算
+* より予測可能なレイアウト設計が可能
+
+## ベストプラクティス
+```css
+/* Modern Border Box Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+```
+* ほとんどのモダンなCSSフレームワークでこのリセットを採用
+* レスポンシブデザインの実装が容易
+* パーセンテージベースのレイアウトで特に有効
